@@ -32,9 +32,7 @@
             _guests.Add(this);
         }
 
-        private static bool IsEmailUnique(string email)
-        {
-            return _guests.Find(g => g.Email == email) == default;
-        }
+        private static bool IsEmailUnique(string email) =>
+            _guests.Find(g => g.Email == email) == default;
     }
 }

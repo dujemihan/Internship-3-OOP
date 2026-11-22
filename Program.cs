@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.Reflection.Metadata.Ecma335;
+using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace Internship_3_OOP
 {
@@ -27,7 +29,7 @@ namespace Internship_3_OOP
             var menu = new Menu(new Dictionary<char, MenuItem>
             {
                 ['1'] = new("Registracija", RegisterNewGuest),
-                ['2'] = new("Prijava", () => MenuAction.Stay),
+                ['2'] = new("Prijava", ShowGuestMenu),
                 ['0'] = new("Povratak", () => MenuAction.Exit)
             });
 
@@ -38,6 +40,8 @@ namespace Internship_3_OOP
                 {
                     case MenuAction.PauseAndStay:
                         Menu.WaitForKey();
+                        break;
+                    case MenuAction.Stay:
                         break;
                     default:
                         return action;
@@ -68,6 +72,39 @@ namespace Internship_3_OOP
             }
 
             return MenuAction.PauseAndStay;
+        }
+
+        static MenuAction ShowGuestMenu()
+        {
+            var email = Menu.ReadRequiredString("Unesite adresu e-pošte", "Molimo unesite adresu!");
+            var password = Menu.ReadRequiredString("Unesite lozinku", "Molimo unesite lozinku!");
+            if (!Guest.TryLogin(email, password, out var guest))
+            {
+                Console.WriteLine("Prijava nije uspjela, molimo provjerite podatke i pokušajte ponovno.");
+                return MenuAction.PauseAndStay;
+            }
+
+            var menu = new Menu(new Dictionary<char, MenuItem>
+            {
+                {'1', new("Moje rezervacije", () => throw new NotImplementedException())},
+                {'2', new("Nova rezervacija", () => throw new NotImplementedException())},
+                {'3', new("Pretraživanje soba", () => throw new NotImplementedException())},
+                {'4', new("Otkazivanje rezervacije", () => throw new NotImplementedException())},
+                {'5', new("Povratak na prethodni izbornik", () => MenuAction.Exit)}
+            });
+
+            while (true)
+            {
+                var action = menu.Show();
+                switch (action)
+                {
+                    case MenuAction.PauseAndStay:
+                        Menu.WaitForKey();
+                        break;
+                    default:
+                        return MenuAction.Stay;
+                }
+            }
         }
     }
 }

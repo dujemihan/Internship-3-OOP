@@ -32,6 +32,12 @@
             _guests.Add(this);
         }
 
+        public static bool TryLogin(string email, string password, out Guest? guest)
+        {
+            guest = _guests.FirstOrDefault(g => g.Email == email && g.Password == password);
+            return guest != default;
+        }
+
         private static bool IsEmailUnique(string email) =>
             _guests.Find(g => g.Email == email) == default;
     }

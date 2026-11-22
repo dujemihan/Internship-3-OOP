@@ -1,13 +1,16 @@
 ﻿namespace Internship_3_OOP
 {
-    internal sealed class Guest
+    internal sealed class Guest : IAuditable
     {
         private static readonly List<Guest> _guests = [];
-        private string Name { get; set; }
-        private string Surname { get; set; }
-        private int BirthYear { get; set; }
-        private string Email { get; set; }
-        private string Password { get; set; }
+        public Guid Guid { get; init; } = Guid.NewGuid();
+        public DateTime CreationTime { get; init; } = DateTime.Now;
+        public DateTime ModificationTime { get; set; } = DateTime.Now;
+        private string Name { get; init; }
+        private string Surname { get; init; }
+        private int BirthYear { get; init; }
+        private string Email { get; init; }
+        private string Password { get; init; }
 
         public Guest(string name, string surname, int birthYear, string email, string password)
         {

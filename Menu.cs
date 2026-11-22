@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Internship_3_OOP
+﻿namespace Internship_3_OOP
 {
     internal sealed record MenuItem(string Name, Func<MenuAction> Action);
 
@@ -27,13 +25,13 @@ namespace Internship_3_OOP
             }
         }
 
-        static void WaitForKey()
+        public static void WaitForKey()
         {
             Console.WriteLine("Pritisnite bilo koju tipku za nastavak...");
             Console.ReadKey();
         }
 
-        static bool IsPromptPositive(in string prompt)
+        public static bool IsPromptPositive(in string prompt)
         {
             while (true)
             {
@@ -47,7 +45,7 @@ namespace Internship_3_OOP
             }
         }
 
-        static string ReadRequiredString(string prompt, string? invalidMsg)
+        public static string ReadRequiredString(string prompt, string? invalidMsg)
         {
             while (true)
             {
@@ -61,6 +59,16 @@ namespace Internship_3_OOP
                 else
                     return str;
             }
+        }
+
+        public static int ReadRequiredInt(string prompt, string? invalidMsg)
+        {
+            int ret;
+
+            while (!int.TryParse(ReadRequiredString(prompt, invalidMsg), out ret))
+                Console.WriteLine(invalidMsg);
+
+            return ret;
         }
 
         static string ReadOptionalString(string prompt, string fallback)

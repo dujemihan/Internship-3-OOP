@@ -95,7 +95,10 @@ namespace Internship_3_OOP
 
             while (true)
             {
-                var action = menu.Show();
+                var action = menu.Show(new MenuContext
+                {
+                    Guest = guest
+                });
                 switch (action)
                 {
                     case MenuAction.PauseAndStay:

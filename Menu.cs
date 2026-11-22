@@ -1,12 +1,33 @@
 ﻿namespace Internship_3_OOP
 {
-    internal sealed record MenuItem(string Name, Func<MenuAction> Action);
+    internal sealed record MenuContext
+    {
+        public Guest? Guest { get; init; }
+    }
+
+    internal sealed record MenuItem
+    {
+        public string Name { get; }
+        public Func<MenuContext?, MenuAction> Action { get; }
+
+        internal MenuItem(string name, Func<MenuAction> action)
+        {
+            Name = name;
+            Action = _ => action();
+        }
+
+        internal MenuItem(string name, Func<MenuContext?, MenuAction> action)
+        {
+            Name = name;
+            Action = action;
+        }
+    };
 
     internal sealed class Menu(Dictionary<char, MenuItem> items)
     {
         private readonly Dictionary<char, MenuItem> items = items;
 
-        public MenuAction Show()
+        public MenuAction Show(MenuContext? context = null)
         {
             Console.Clear();
             foreach (var (k, v) in items)
@@ -19,7 +40,7 @@
                 Console.WriteLine();
                 choice = char.ToLower(choice);
                 if (items.TryGetValue(choice, out var item))
-                    return item.Action();
+                    return item.Action(context);
                 else
                     Console.WriteLine("Molimo odaberite valjanu opciju!");
             }

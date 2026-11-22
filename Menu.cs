@@ -3,6 +3,8 @@
     internal sealed record MenuContext
     {
         public Guest? Guest { get; init; }
+        public Reservation? Reservation { get; init; }
+        public Room? Room { get; init; }
     }
 
     internal sealed record MenuItem

@@ -9,6 +9,10 @@ namespace Internship_3_OOP
             Console.InputEncoding = Encoding.UTF8;
             Console.OutputEncoding = Encoding.UTF8;
 
+            _ = new Guest("Ivica", "Horvat", 1990, "ivan.h@gmail.com", "test1234");
+            _ = new Guest("Mate", "Matić", 1990, "maticmate@gmail.com", "4321tset");
+            _ = new Guest("Franjo", "Franić", 1990, "ffranjo@gmail.com", "defg9876");
+
             var menu = new Menu(new Dictionary<char, MenuItem>
             {
                 ['1'] = new("Gosti", ShowGuestsMenu),

@@ -2,7 +2,8 @@ namespace Internship_3_OOP
 {
     internal sealed class Reservation : IAuditable
     {
-        private readonly List<Reservation> _reservations = [];
+        private static readonly int GUID_CHARACTER_COUNT = 8;
+        private static readonly List<Reservation> _reservations = [];
         public Guid Guid { get; init; } = Guid.NewGuid();
         private Guid GuestGuid { get; init; }
         private Guid RoomGuid { get; init; }
@@ -25,6 +26,20 @@ namespace Internship_3_OOP
             CheckOutDate = checkOut;
             NightCount = nights;
             TotalPrice = NightCount * room.NightPrice;
+
+            _reservations.Add(this);
+        }
+
+        public override string ToString()
+        {
+            return $"[{Guid.ToString()[..GUID_CHARACTER_COUNT]}] Soba TODO (TODO)" +
+                $"| {CheckInDate:d} - {CheckOutDate:d}" +
+                $"{NightCount} noći | {TotalPrice} € | {Status}";
+        }
+
+        public static IEnumerable<Reservation> GetGuestReservations(Guest guest)
+        {
+            return _reservations.Where(r => r.GuestGuid == guest.Guid);
         }
     }
 }

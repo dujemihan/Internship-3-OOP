@@ -86,7 +86,7 @@ namespace Internship_3_OOP
 
             var menu = new Menu(new Dictionary<char, MenuItem>
             {
-                {'1', new("Moje rezervacije", () => throw new NotImplementedException())},
+                {'1', new("Moje rezervacije", PrintGuestReservations)},
                 {'2', new("Nova rezervacija", () => throw new NotImplementedException())},
                 {'3', new("Pretraživanje soba", () => throw new NotImplementedException())},
                 {'4', new("Otkazivanje rezervacije", () => throw new NotImplementedException())},
@@ -108,6 +108,21 @@ namespace Internship_3_OOP
                         return MenuAction.Stay;
                 }
             }
+        }
+
+        static MenuAction PrintGuestReservations(MenuContext? context)
+        {
+            ArgumentNullException.ThrowIfNull(context);
+            ArgumentNullException.ThrowIfNull(context.Guest);
+
+            Console.Clear();
+
+            foreach (var reservation in Reservation.GetGuestReservations(context.Guest))
+            {
+                Console.WriteLine(reservation);
+            }
+
+            return MenuAction.PauseAndStay;
         }
     }
 }

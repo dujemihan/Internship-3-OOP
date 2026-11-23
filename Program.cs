@@ -44,7 +44,7 @@ namespace Internship_3_OOP
                     case MenuAction.Stay:
                         break;
                     default:
-                        return action;
+                        return MenuAction.Stay;
                 }
             }
         }

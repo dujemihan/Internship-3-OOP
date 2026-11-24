@@ -2,7 +2,6 @@ namespace Internship_3_OOP
 {
     internal sealed class Reservation : IAuditable
     {
-        private static readonly int GUID_CHARACTER_COUNT = 8;
         private static readonly List<Reservation> _reservations = [];
         public Guid Guid { get; init; } = Guid.NewGuid();
         private Guid GuestGuid { get; init; }
@@ -32,7 +31,7 @@ namespace Internship_3_OOP
 
         public override string ToString()
         {
-            return $"[{Guid.ToString()[..GUID_CHARACTER_COUNT]}] Soba TODO (TODO)" +
+            return $"[{Guid.ToString()[..Program.GUID_CHARACTER_COUNT]}] Soba TODO (TODO)" +
                 $"| {CheckInDate:d} - {CheckOutDate:d}" +
                 $"{NightCount} noći | {TotalPrice} € | {Status}";
         }

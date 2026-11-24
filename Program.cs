@@ -6,6 +6,8 @@ namespace Internship_3_OOP
 {
     internal class Program
     {
+        public static readonly int GUID_CHARACTER_COUNT = 8;
+
         static void Main(string[] args)
         {
             Console.InputEncoding = Encoding.UTF8;
@@ -15,9 +17,16 @@ namespace Internship_3_OOP
             _ = new Guest("Mate", "Matić", 1990, "maticmate@gmail.com", "4321tset");
             _ = new Guest("Franjo", "Franić", 1990, "ffranjo@gmail.com", "defg9876");
 
+            _ = new Room(101, 1, RoomCategory.Standard, 3, 50.0m);
+            _ = new Room(206, 7, RoomCategory.Deluxe, 2, 90.0m);
+            _ = new Room(153, 3, RoomCategory.Standard, 2, 40.0m);
+            _ = new Room(189, 5, RoomCategory.Standard, 4, 65.0m);
+            _ = new Room(301, 9, RoomCategory.Suite, 1, 180.0m);
+
             var menu = new Menu(new Dictionary<char, MenuItem>
             {
                 ['1'] = new("Gosti", ShowGuestsMenu),
+                ['3'] = new("Sobe", ShowRoomsMenu),
                 ['0'] = new("Izlaz iz programa", () => MenuAction.Exit)
             });
 
@@ -121,6 +130,38 @@ namespace Internship_3_OOP
             {
                 Console.WriteLine(reservation);
             }
+
+            return MenuAction.PauseAndStay;
+        }
+
+        static MenuAction ShowRoomsMenu()
+        {
+            var menu = new Menu(new Dictionary<char, MenuItem>
+            {
+                {'1', new MenuItem("Prikaz svih soba", ShowAllRooms)},
+                {'5', new MenuItem("Povratak na prethodni izbornik", () => MenuAction.Exit)}
+            });
+
+            while (true)
+            {
+                var action = menu.Show();
+                switch (action)
+                {
+                    case MenuAction.PauseAndStay:
+                        Menu.WaitForKey();
+                        break;
+                    case MenuAction.Stay:
+                        break;
+                    case MenuAction.Exit:
+                        return MenuAction.Stay;
+                }
+            }
+        }
+
+        static MenuAction ShowAllRooms()
+        {
+            foreach (var room in Room.AllRooms)
+                Console.WriteLine(room);
 
             return MenuAction.PauseAndStay;
         }

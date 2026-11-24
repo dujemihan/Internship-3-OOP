@@ -6,6 +6,8 @@ namespace Internship_3_OOP
 {
     internal class Room : IAuditable
     {
+        private static readonly List<Room> _rooms = [];
+        public static readonly IReadOnlyCollection<Room> AllRooms = _rooms;
         public Guid Guid { get; init; } = Guid.NewGuid();
         public DateTime CreationTime { get; init; } = DateTime.Now;
         public DateTime ModificationTime { get; set; } = DateTime.Now;
@@ -14,5 +16,31 @@ namespace Internship_3_OOP
         public RoomCategory Category { get; init; }
         public int Capacity { get; init; }
         public decimal NightPrice { get; init; }
+
+        public Room(int number, int floor, RoomCategory category, int capacity, decimal price)
+        {
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(number);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(capacity);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(price);
+
+            if (_rooms.FirstOrDefault(r => r.RoomNumber == number) != default)
+                throw new ArgumentException("Broj sobe mora biti jedinstven.");
+
+            RoomNumber = number;
+            FloorNumber = floor;
+            Category = category;
+            Capacity = capacity;
+            NightPrice = price;
+
+            _rooms.Add(this);
+        }
+
+        public override string ToString()
+        {
+            return $"[{Guid.ToString()[..Program.GUID_CHARACTER_COUNT]}] Soba {RoomNumber} " +
+                $"| {FloorNumber}. kat | {Category} | " +
+                $"{(Capacity % 10 == 1 ? $"{Capacity} osoba" : $"{Capacity} osobe")} | " +
+                $"{NightPrice} €/noć | broj rezervacija: TODO";
+        }
     }
 }

@@ -1,3 +1,5 @@
+﻿using System.Diagnostics.CodeAnalysis;
+
 namespace Internship_3_OOP
 {
     internal sealed class Guest : IAuditable
@@ -6,8 +8,8 @@ namespace Internship_3_OOP
         public Guid Guid { get; init; } = Guid.NewGuid();
         public DateTime CreationTime { get; init; } = DateTime.Now;
         public DateTime ModificationTime { get; set; } = DateTime.Now;
-        private string Name { get; init; }
-        private string Surname { get; init; }
+        public string Name { get; private init; }
+        public string Surname { get; private init; }
         private int BirthYear { get; init; }
         private string Email { get; init; }
         private string Password { get; init; }
@@ -32,7 +34,7 @@ namespace Internship_3_OOP
             _guests.Add(this);
         }
 
-        public static bool TryLogin(string email, string password, out Guest? guest)
+        public static bool TryLogin(string email, string password, [NotNullWhen(true)] out Guest? guest)
         {
             guest = _guests.FirstOrDefault(g => g.Email == email && g.Password == password);
             return guest != default;

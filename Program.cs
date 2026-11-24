@@ -28,7 +28,7 @@ namespace Internship_3_OOP
                 ['1'] = new("Gosti", ShowGuestsMenu),
                 ['3'] = new("Sobe", ShowRoomsMenu),
                 ['0'] = new("Izlaz iz programa", () => MenuAction.Exit)
-            });
+            }, "PROGRAM ZA VOĐENJE HOTELA");
 
             menu.Run();
         }
@@ -40,7 +40,7 @@ namespace Internship_3_OOP
                 ['1'] = new("Registracija", RegisterNewGuest),
                 ['2'] = new("Prijava", ShowGuestMenu),
                 ['0'] = new("Povratak", () => MenuAction.Exit)
-            });
+            }, "GOSTI");
 
             return menu.Run();
         }
@@ -87,7 +87,7 @@ namespace Internship_3_OOP
                 {'3', new("Pretraživanje soba", () => throw new NotImplementedException())},
                 {'4', new("Otkazivanje rezervacije", () => throw new NotImplementedException())},
                 {'5', new("Povratak na prethodni izbornik", () => MenuAction.Exit)}
-            });
+            }, $"GOST: {guest.Surname}, {guest.Name}");
 
             return menu.Run(new MenuContext
             {
@@ -115,7 +115,7 @@ namespace Internship_3_OOP
                 {'1', new MenuItem("Prikaz svih soba", ShowAllRooms)},
                 {'4', new MenuItem("Brisanje sobe", DeleteRoom)},
                 {'5', new MenuItem("Povratak na prethodni izbornik", () => MenuAction.Exit)}
-            });
+            }, "SOBE");
 
             return menu.Run();
         }

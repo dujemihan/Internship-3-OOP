@@ -132,11 +132,13 @@ namespace Internship_3_OOP
         {
             Console.Clear();
             ShowAllRooms();
+            Console.WriteLine();
 
             var targetGuid = Menu.ReadOptionalString("Unesite ID sobe (prazno za odustajanje)", "");
             if (targetGuid == "")
                 return MenuAction.PauseAndStay;
 
+            Console.WriteLine();    
             var target = Room._rooms.FirstOrDefault(
                 r => r.Guid.ToString()[..GUID_CHARACTER_COUNT].SequenceEqual(targetGuid));
             if (target == default)
@@ -145,7 +147,8 @@ namespace Internship_3_OOP
                 return MenuAction.PauseAndStay;
             }
 
-            if (Menu.IsPromptPositive($"{target}\nŽelite li obrisati ovu sobu?"))
+            Console.WriteLine(target);
+            if (Menu.IsPromptPositive("Želite li obrisati ovu sobu?"))
             {
                 if (Room._rooms.Remove(target))
                     Console.WriteLine("Soba uspješno izbrisana.");

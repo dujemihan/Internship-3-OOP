@@ -22,7 +22,7 @@ namespace Internship_3_OOP
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(capacity, "Kapacitet");
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(price, "Cijena noćenja");
 
-            if (_rooms.FirstOrDefault(r => r.RoomNumber == number) != default)
+            if (_rooms.Any(r => r.RoomNumber == number))
                 throw new ArgumentException("Broj sobe mora biti jedinstven.");
 
             RoomNumber = number;

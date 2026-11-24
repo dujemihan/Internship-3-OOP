@@ -47,6 +47,6 @@ namespace Internship_3_OOP
                 end > r.CheckInDate);
 
         private static bool IsEmailUnique(string email) =>
-            _guests.Find(g => g.Email == email) == default;
+            !_guests.Any(g => g.Email == email);
     }
 }

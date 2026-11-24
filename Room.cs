@@ -43,7 +43,7 @@ namespace Internship_3_OOP
         public override string ToString()
         {
             return $"[{Guid.ToString()[..Program.GUID_CHARACTER_COUNT]}] Soba {RoomNumber} " +
-                $"| {FloorNumber}. kat | {Category} | " +
+                $"| {FloorNumber}. kat | {Category.GetDisplayName()} | " +
                 $"{(Capacity % 10 == 1 ? $"{Capacity} osoba" : $"{Capacity} osobe")} | " +
                 $"{NightPrice} €/noć | broj rezervacija: TODO";
         }

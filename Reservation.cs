@@ -30,14 +30,17 @@ namespace Internship_3_OOP
             CheckOutDate = checkOut;
             TotalPrice = (CheckOutDate - CheckInDate).Days * room.NightPrice;
 
+            if (checkOut < DateTime.Today)
+                Status = ReservationStatus.Finished;
+
             _reservations.Add(this);
         }
 
         public override string ToString()
         {
             return $"[{Guid.ToString()[..Program.GUID_CHARACTER_COUNT]}] Soba TODO (TODO)" +
-                $"| {CheckInDate:d} - {CheckOutDate:d}" +
-                $"{(CheckOutDate - CheckInDate).Days} noći | {TotalPrice} € | {Status}";
+                $"| {CheckInDate:d} - {CheckOutDate:d} | " +
+                $"{(CheckOutDate - CheckInDate).Days} noći | {TotalPrice} € | {Status.GetDisplayName()}";
         }
     }
 }

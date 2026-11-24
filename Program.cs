@@ -18,6 +18,7 @@ namespace Internship_3_OOP
             var menu = new Menu(new Dictionary<char, MenuItem>
             {
                 ['1'] = new("Gosti", ShowGuestsMenu),
+                ['2'] = new("Rezervacije", ShowReservationsMenu),
                 ['3'] = new("Sobe", ShowRoomsMenu),
                 ['0'] = new("Izlaz iz programa", () => MenuAction.Exit)
             }, "PROGRAM ZA VOĐENJE HOTELA");
@@ -95,6 +96,27 @@ namespace Internship_3_OOP
             Console.Clear();
 
             foreach (var reservation in Reservation._reservations.Where(r => r.GuestGuid == context.Guest.Guid))
+                Console.WriteLine(reservation);
+
+            return MenuAction.PauseAndStay;
+        }
+
+        static MenuAction ShowReservationsMenu()
+        {
+            var menu = new Menu(new Dictionary<char, MenuItem>
+            {
+                ['1'] = new("Prikaz svih rezervacija", ShowAllReservations),
+                ['6'] = new("Povratak na prethodni izbornik", () => MenuAction.Exit)
+            }, "REZERVACIJE");
+
+            return menu.Run();
+        }
+
+        static MenuAction ShowAllReservations()
+        {
+            Console.Clear();
+
+            foreach (var reservation in Reservation._reservations)
                 Console.WriteLine(reservation);
 
             return MenuAction.PauseAndStay;
@@ -242,7 +264,7 @@ namespace Internship_3_OOP
             _ = new Reservation(IvicaH, RoomA, new(2026, 8, 10), new(2026, 8, 17));
             _ = new Reservation(FranjoF, RoomC, new(2026, 8, 5), new(2026, 8, 8));
             _ = new Reservation(MateM, RoomE, new(2026, 8, 12), new(2026, 8, 15));
-            _ = new Reservation(FranjoF, RoomB, new(2026, 8, 3), new(2026, 8, 7));
+            _ = new Reservation(FranjoF, RoomB, new(2026, 8, 3), new(2026, 8, 5));
             _ = new Reservation(IvicaH, RoomD, new(2026, 8, 1), new(2026, 8, 5));
         }
     }

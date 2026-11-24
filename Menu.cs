@@ -29,12 +29,30 @@
     {
         private readonly Dictionary<char, MenuItem> items = items;
 
+        public MenuAction Run(MenuContext? context = null)
+        {
+            while (true)
+            {
+                switch (Show(context))
+                {
+                    case MenuAction.PauseAndStay:
+                        WaitForKey();
+                        break;
+                    case MenuAction.Stay:
+                        break;
+                    default:
+                        return MenuAction.Stay;
+                }
+            }
+        }
+
         public MenuAction Show(MenuContext? context = null)
         {
             Console.Clear();
             foreach (var (k, v) in items)
                 Console.WriteLine($"{k} - {v.Name}");
 
+            Console.WriteLine();
             while (true)
             {
                 Console.Write("Odaberite opciju: ");

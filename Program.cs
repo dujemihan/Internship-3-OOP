@@ -30,7 +30,7 @@ namespace Internship_3_OOP
                 ['0'] = new("Izlaz iz programa", () => MenuAction.Exit)
             });
 
-            while (menu.Show() == MenuAction.Stay) ;
+            menu.Run();
         }
 
         static MenuAction ShowGuestsMenu()
@@ -42,20 +42,7 @@ namespace Internship_3_OOP
                 ['0'] = new("Povratak", () => MenuAction.Exit)
             });
 
-            while (true)
-            {
-                var action = menu.Show();
-                switch (action)
-                {
-                    case MenuAction.PauseAndStay:
-                        Menu.WaitForKey();
-                        break;
-                    case MenuAction.Stay:
-                        break;
-                    default:
-                        return MenuAction.Stay;
-                }
-            }
+            return menu.Run();
         }
 
         static MenuAction RegisterNewGuest()
@@ -102,21 +89,10 @@ namespace Internship_3_OOP
                 {'5', new("Povratak na prethodni izbornik", () => MenuAction.Exit)}
             });
 
-            while (true)
+            return menu.Run(new MenuContext
             {
-                var action = menu.Show(new MenuContext
-                {
-                    Guest = guest
-                });
-                switch (action)
-                {
-                    case MenuAction.PauseAndStay:
-                        Menu.WaitForKey();
-                        break;
-                    default:
-                        return MenuAction.Stay;
-                }
-            }
+                Guest = guest
+            });
         }
 
         static MenuAction PrintGuestReservations(MenuContext? context)
@@ -142,20 +118,7 @@ namespace Internship_3_OOP
                 {'5', new MenuItem("Povratak na prethodni izbornik", () => MenuAction.Exit)}
             });
 
-            while (true)
-            {
-                var action = menu.Show();
-                switch (action)
-                {
-                    case MenuAction.PauseAndStay:
-                        Menu.WaitForKey();
-                        break;
-                    case MenuAction.Stay:
-                        break;
-                    case MenuAction.Exit:
-                        return MenuAction.Stay;
-                }
-            }
+            return menu.Run();
         }
 
         static MenuAction ShowAllRooms()

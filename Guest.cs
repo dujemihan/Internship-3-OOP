@@ -4,7 +4,7 @@ namespace Internship_3_OOP
 {
     internal sealed class Guest : IAuditable
     {
-        private static readonly List<Guest> _guests = [];
+        public static readonly List<Guest> _guests = [];
         public Guid Guid { get; init; } = Guid.NewGuid();
         public DateTime CreationTime { get; init; } = DateTime.Now;
         public DateTime ModificationTime { get; set; } = DateTime.Now;

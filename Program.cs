@@ -106,6 +106,7 @@ namespace Internship_3_OOP
             var menu = new Menu(new Dictionary<char, MenuItem>
             {
                 ['1'] = new("Prikaz svih rezervacija", ShowAllReservations),
+                ['3'] = new("Pretraživanje rezervacija", SearchReservations),
                 ['5'] = new("Brisanje rezervacije", DeleteReservation),
                 ['6'] = new("Povratak na prethodni izbornik", () => MenuAction.Exit)
             }, "REZERVACIJE");
@@ -118,6 +119,55 @@ namespace Internship_3_OOP
             Console.Clear();
 
             foreach (var reservation in Reservation._reservations)
+                Console.WriteLine(reservation);
+
+            return MenuAction.PauseAndStay;
+        }
+
+        static MenuAction SearchReservations()
+        {
+            var menu = new Menu(new Dictionary<char, MenuItem>
+            {
+                ['1'] = new("Po ID-ju", SearchReservationsById),
+                ['2'] = new("Po prezimenu gosta", SearchReservationsBySurname)
+            });
+
+            return menu.Show();
+        }
+
+        static MenuAction SearchReservationsById()
+        {
+            var guid = Menu.ReadOptionalString("Unesite ID (prazno = odustani)");
+            if (string.IsNullOrWhiteSpace(guid))
+                return MenuAction.Stay;
+
+            var reservation = Reservation._reservations.FirstOrDefault(
+                r => r.Guid.ToString()[..GUID_CHARACTER_COUNT] == guid);
+            if (reservation == default)
+            {
+                Console.WriteLine("Ta rezervacija ne postoji.");
+                return MenuAction.PauseAndStay;
+            }
+
+            Console.WriteLine(reservation);
+
+            return MenuAction.PauseAndStay;
+        }
+
+        static MenuAction SearchReservationsBySurname()
+        {
+            var surname = Menu.ReadOptionalString("Unesite prezime (prazno = odustani)");
+            if (string.IsNullOrWhiteSpace(surname))
+                return MenuAction.Stay;
+
+            var guest = Guest._guests.FirstOrDefault(g => g.Surname.Equals(surname, StringComparison.CurrentCultureIgnoreCase));
+            if (guest == default)
+            {
+                Console.WriteLine("Taj gost ne postoji.");
+                return MenuAction.PauseAndStay;
+            }
+
+            foreach (var reservation in Reservation._reservations.Where(r => r.GuestGuid == guest.Guid))
                 Console.WriteLine(reservation);
 
             return MenuAction.PauseAndStay;

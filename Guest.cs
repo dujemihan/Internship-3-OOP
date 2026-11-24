@@ -40,6 +40,17 @@ namespace Internship_3_OOP
             return guest != default;
         }
 
+        public bool HasReservation(DateTime start, DateTime end)
+        {
+            foreach (var reservation in Reservation._reservations.Where(r => r.GuestGuid == Guid))
+            {
+                if (reservation.CheckOutDate > start || reservation.CheckInDate > end)
+                    return true;
+            }
+
+            return false;
+        }
+
         private static bool IsEmailUnique(string email) =>
             _guests.Find(g => g.Email == email) == default;
     }

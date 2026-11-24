@@ -10,21 +10,25 @@ namespace Internship_3_OOP
         public DateTime ModificationTime { get; set; } = DateTime.Now;
         public DateTime CheckInDate { get; private set; }
         public DateTime CheckOutDate { get; private set; }
-        public int NightCount { get; private set; }
         public decimal TotalPrice { get; private set; }
         public ReservationStatus Status { get; private set; } = ReservationStatus.Confirmed;
 
-        public Reservation(Guest guest, Room room, DateTime checkIn, DateTime checkOut, int nights)
+        public Reservation(Guest guest, Room room, DateTime checkIn, DateTime checkOut, bool disallowPast = false)
         {
-            if (checkIn < DateTime.Today || checkOut < DateTime.Today)
+            if (disallowPast && (checkIn < DateTime.Today || checkOut < DateTime.Today))
                 throw new ArgumentException("Nije moguće retroaktivno rezervirati.");
+
+            if (room.IsOccupied(checkIn, checkOut))
+                throw new Exception("Soba je već zauzeta u tom rasponu.");
+
+            if (guest.HasReservation(checkIn, checkOut))
+                throw new Exception("Gost već ima rezervaciju u tom rasponu.");
 
             RoomGuid = room.Guid;
             GuestGuid = guest.Guid;
             CheckInDate = checkIn;
             CheckOutDate = checkOut;
-            NightCount = nights;
-            TotalPrice = NightCount * room.NightPrice;
+            TotalPrice = (CheckOutDate - CheckInDate).Days * room.NightPrice;
 
             _reservations.Add(this);
         }
@@ -33,7 +37,7 @@ namespace Internship_3_OOP
         {
             return $"[{Guid.ToString()[..Program.GUID_CHARACTER_COUNT]}] Soba TODO (TODO)" +
                 $"| {CheckInDate:d} - {CheckOutDate:d}" +
-                $"{NightCount} noći | {TotalPrice} € | {Status}";
+                $"{(CheckOutDate - CheckInDate).Days} noći | {TotalPrice} € | {Status}";
         }
     }
 }

@@ -34,6 +34,17 @@ namespace Internship_3_OOP
             _rooms.Add(this);
         }
 
+        public bool IsOccupied(DateTime start, DateTime end)
+        {
+            foreach (var reservation in Reservation._reservations.Where(r => r.RoomGuid == Guid))
+            {
+                if (reservation.CheckOutDate > start || reservation.CheckInDate > end)
+                    return true;
+            }
+
+            return false;
+        }
+
         public override string ToString()
         {
             return $"[{Guid.ToString()[..Program.GUID_CHARACTER_COUNT]}] Soba {RoomNumber} " +

@@ -229,15 +229,21 @@ namespace Internship_3_OOP
 
         static void InitializeTestData()
         {
-            _ = new Guest("Ivica", "Horvat", 1990, "ivan.h@gmail.com", "test1234");
-            _ = new Guest("Mate", "Matić", 1990, "maticmate@gmail.com", "4321tset");
-            _ = new Guest("Franjo", "Franić", 1990, "ffranjo@gmail.com", "defg9876");
+            var IvicaH = new Guest("Ivica", "Horvat", 1990, "ivan.h@gmail.com", "test1234");
+            var MateM = new Guest("Mate", "Matić", 1990, "maticmate@gmail.com", "4321tset");
+            var FranjoF = new Guest("Franjo", "Franić", 1990, "ffranjo@gmail.com", "defg9876");
 
-            _ = new Room(101, 1, RoomCategory.Standard, 3, 50.0m);
-            _ = new Room(206, 7, RoomCategory.Deluxe, 2, 90.0m);
-            _ = new Room(153, 3, RoomCategory.Standard, 2, 40.0m);
-            _ = new Room(189, 5, RoomCategory.Standard, 4, 65.0m);
-            _ = new Room(301, 9, RoomCategory.Suite, 1, 180.0m);
+            var RoomA = new Room(101, 1, RoomCategory.Standard, 3, 50.0m);
+            var RoomB = new Room(206, 7, RoomCategory.Deluxe, 2, 90.0m);
+            var RoomC = new Room(153, 3, RoomCategory.Standard, 2, 40.0m);
+            var RoomD = new Room(189, 5, RoomCategory.Standard, 4, 65.0m);
+            var RoomE = new Room(301, 9, RoomCategory.Suite, 1, 180.0m);
+
+            _ = new Reservation(IvicaH, RoomA, new(2026, 8, 10), new(2026, 8, 17));
+            _ = new Reservation(FranjoF, RoomC, new(2026, 8, 5), new(2026, 8, 8));
+            _ = new Reservation(MateM, RoomE, new(2026, 8, 12), new(2026, 8, 15));
+            _ = new Reservation(FranjoF, RoomB, new(2026, 8, 3), new(2026, 8, 7));
+            _ = new Reservation(IvicaH, RoomD, new(2026, 8, 1), new(2026, 8, 5));
         }
     }
 }

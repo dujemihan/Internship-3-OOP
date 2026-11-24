@@ -18,9 +18,9 @@ namespace Internship_3_OOP
 
         public Room(int number, int floor, RoomCategory category, int capacity, decimal price)
         {
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(number);
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(capacity);
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(price);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(number, "Broj sobe");
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(capacity, "Kapacitet");
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(price, "Cijena noćenja");
 
             if (_rooms.FirstOrDefault(r => r.RoomNumber == number) != default)
                 throw new ArgumentException("Broj sobe mora biti jedinstven.");

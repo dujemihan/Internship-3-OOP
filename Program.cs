@@ -106,6 +106,7 @@ namespace Internship_3_OOP
             var menu = new Menu(new Dictionary<char, MenuItem>
             {
                 ['1'] = new("Prikaz svih rezervacija", ShowAllReservations),
+                ['5'] = new("Brisanje rezervacije", DeleteReservation),
                 ['6'] = new("Povratak na prethodni izbornik", () => MenuAction.Exit)
             }, "REZERVACIJE");
 
@@ -120,6 +121,39 @@ namespace Internship_3_OOP
                 Console.WriteLine(reservation);
 
             return MenuAction.PauseAndStay;
+        }
+
+        static MenuAction DeleteReservation()
+        {
+            Console.Clear();
+
+            ShowAllReservations();
+            Console.WriteLine();
+
+            var guid = Menu.ReadOptionalString("Unesite ID rezervacije za brisanje (prazno = odustani)");
+            if (string.IsNullOrEmpty(guid))
+                return MenuAction.PauseAndStay;
+
+            var target = Reservation._reservations.FirstOrDefault(
+                r => r.Guid.ToString()[..Program.GUID_CHARACTER_COUNT] == guid);
+            if (target == default)
+            {
+                Console.WriteLine("Ta rezervacija ne postoji.");
+                return MenuAction.PauseAndStay;
+            }
+
+            Console.WriteLine(target);
+            if (Menu.IsPromptPositive("Želite li obrisati ovu rezervaciju?"))
+            {
+                if (Reservation._reservations.Remove(target))
+                    Console.WriteLine("Rezervacija uspješno obrisana.");
+                else
+                    Console.WriteLine("Došlo je do greške pri brisanju!");
+
+                return MenuAction.PauseAndStay;
+            }
+            else
+                return MenuAction.Stay;
         }
 
         static MenuAction ShowRoomsMenu()
@@ -225,7 +259,7 @@ namespace Internship_3_OOP
             Console.WriteLine();
 
             var targetGuid = Menu.ReadOptionalString("Unesite ID sobe (prazno za odustajanje)");
-            if (targetGuid is null)
+            if (string.IsNullOrEmpty(targetGuid))
                 return MenuAction.PauseAndStay;
 
             Console.WriteLine();    

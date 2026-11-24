@@ -1,4 +1,4 @@
-﻿namespace Internship_3_OOP
+namespace Internship_3_OOP
 {
     internal sealed class Guest : IAuditable
     {

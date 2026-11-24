@@ -25,9 +25,10 @@
         }
     };
 
-    internal sealed class Menu(Dictionary<char, MenuItem> items)
+    internal sealed class Menu(Dictionary<char, MenuItem> items, string? header = null)
     {
         private readonly Dictionary<char, MenuItem> items = items;
+        public string? Header { get; init; } = header;
 
         public MenuAction Run(MenuContext? context = null)
         {
@@ -49,6 +50,10 @@
         public MenuAction Show(MenuContext? context = null)
         {
             Console.Clear();
+
+            if (Header is not null)
+                Console.WriteLine($"{Header}\n");
+
             foreach (var (k, v) in items)
                 Console.WriteLine($"{k} - {v.Name}");
 

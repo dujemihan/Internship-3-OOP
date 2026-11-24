@@ -43,7 +43,7 @@ namespace Internship_3_OOP
 
             var name = Menu.ReadRequiredString("Unesite ime", "Molimo unesite ime!");
             var surname = Menu.ReadRequiredString("Unesite prezime", "Molimo unesite prezime!");
-            var birthYear = Menu.ReadRequiredInt("Unesite godinu rođenja", "Molimo unesite godinu!");
+            var birthYear = Menu.ReadRequired<int>("Unesite godinu rođenja", "Molimo unesite godinu!");
             var email = Menu.ReadRequiredString("Unesite adresu e-pošte", "Molimo unesite adresu!");
             var password = Menu.ReadRequiredString("Unesite lozinku", "Molimo unesite lozinku!");
 

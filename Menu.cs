@@ -95,9 +95,9 @@
         {
             while (true)
             {
-                var str = ReadOptionalString(prompt, "");
+                var str = ReadOptionalString(prompt);
 
-                if (str == "")
+                if (str is null)
                 {
                     if (invalidMsg is not null)
                         Console.WriteLine(invalidMsg);
@@ -107,17 +107,7 @@
             }
         }
 
-        public static int ReadRequiredInt(string prompt, string? invalidMsg)
-        {
-            int ret;
-
-            while (!int.TryParse(ReadRequiredString(prompt, invalidMsg), out ret))
-                Console.WriteLine(invalidMsg);
-
-            return ret;
-        }
-
-        public static string ReadOptionalString(string prompt, string fallback)
+        public static string? ReadOptionalString(string prompt, string? fallback = null)
         {
             Console.Write($"{prompt}: ");
             var str = Console.ReadLine()?.Trim();
@@ -126,6 +116,21 @@
                 return fallback;
             else
                 return str;
+        }
+
+        public static T ReadRequired<T>(string prompt, string invalidMsg) where T : IParsable<T>
+        {
+            T? ret;
+
+            while (!T.TryParse(ReadRequiredString(prompt, invalidMsg), null, out ret))
+                Console.WriteLine(invalidMsg);
+
+            return ret;
+        }
+
+        public static T? ReadOptional<T>(string prompt, T? fallback = default) where T : IParsable<T>
+        {
+            return T.TryParse(ReadOptionalString(prompt), null, out var ret) ? ret : fallback;
         }
     }
 }

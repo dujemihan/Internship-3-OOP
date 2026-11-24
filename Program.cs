@@ -106,6 +106,7 @@ namespace Internship_3_OOP
             {
                 {'1', new MenuItem("Prikaz svih soba", ShowAllRooms)},
                 {'2', new MenuItem("Dodavanje nove sobe", AddNewRoom)},
+                {'3', new MenuItem("Pretraživanje soba", SearchRooms)},
                 {'4', new MenuItem("Brisanje sobe", DeleteRoom)},
                 {'5', new MenuItem("Povratak na prethodni izbornik", () => MenuAction.Exit)}
             }, "SOBE");
@@ -147,6 +148,50 @@ namespace Internship_3_OOP
                     Console.WriteLine($"Greška pri dodavanju sobe: {ex.Message}");
                 }
             }
+
+            return MenuAction.PauseAndStay;
+        }
+
+        static MenuAction SearchRooms()
+        {
+            var menu = new Menu(new Dictionary<char, MenuItem>
+            {
+                {'1', new("Po broju", SearchRoomsByNumber)},
+                {'2', new("Po kategoriji", SearchRoomsByCategory)},
+                {'3', new("Povratak na prethodni izbornik", () => MenuAction.Exit)},
+            }, "PRETRAŽIVANJE SOBA");
+
+            return menu.Run();
+        }
+
+        static MenuAction SearchRoomsByNumber()
+        {
+            var number = Menu.ReadOptional<int>("Unesite broj sobe (prazno za odustajanje)");
+            if (number == default)
+                return MenuAction.Stay;
+
+            var room = Room._rooms.FirstOrDefault(r => r.RoomNumber == number);
+            if (room == default)
+            {
+                Console.WriteLine("Soba nije pronađena.");
+                return MenuAction.PauseAndStay;
+            }
+
+            Console.WriteLine(room);
+            return MenuAction.PauseAndStay;
+        }
+
+        static MenuAction SearchRoomsByCategory()
+        {
+            Console.Clear();
+            Console.WriteLine($"Moguće kategorije: {string.Join(',', Enum.GetValues<RoomCategory>())}");
+
+            if (!Enum.TryParse(Menu.ReadOptionalString("Unesite kategoriju sobe (prazno za odustajanje)"),
+                true, out RoomCategory category))
+                return MenuAction.Stay;
+
+            foreach (var room in Room._rooms.Where(r => r.Category == category))
+                Console.WriteLine(room);
 
             return MenuAction.PauseAndStay;
         }

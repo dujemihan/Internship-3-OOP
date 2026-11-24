@@ -102,7 +102,7 @@ namespace Internship_3_OOP
 
             Console.Clear();
 
-            foreach (var reservation in Reservation.AllReservations.Where(r => r.GuestGuid == context.Guest.Guid))
+            foreach (var reservation in Reservation._reservations.Where(r => r.GuestGuid == context.Guest.Guid))
                 Console.WriteLine(reservation);
 
             return MenuAction.PauseAndStay;
@@ -113,6 +113,7 @@ namespace Internship_3_OOP
             var menu = new Menu(new Dictionary<char, MenuItem>
             {
                 {'1', new MenuItem("Prikaz svih soba", ShowAllRooms)},
+                {'4', new MenuItem("Brisanje sobe", DeleteRoom)},
                 {'5', new MenuItem("Povratak na prethodni izbornik", () => MenuAction.Exit)}
             });
 
@@ -121,8 +122,36 @@ namespace Internship_3_OOP
 
         static MenuAction ShowAllRooms()
         {
-            foreach (var room in Room.AllRooms)
+            foreach (var room in Room._rooms)
                 Console.WriteLine(room);
+
+            return MenuAction.PauseAndStay;
+        }
+
+        static MenuAction DeleteRoom()
+        {
+            Console.Clear();
+            ShowAllRooms();
+
+            var targetGuid = Menu.ReadOptionalString("Unesite ID sobe (prazno za odustajanje)", "");
+            if (targetGuid == "")
+                return MenuAction.PauseAndStay;
+
+            var target = Room._rooms.FirstOrDefault(
+                r => r.Guid.ToString()[..GUID_CHARACTER_COUNT].SequenceEqual(targetGuid));
+            if (target == default)
+            {
+                Console.WriteLine("Ta soba ne postoji.");
+                return MenuAction.PauseAndStay;
+            }
+
+            if (Menu.IsPromptPositive($"{target}\nŽelite li obrisati ovu sobu?"))
+            {
+                if (Room._rooms.Remove(target))
+                    Console.WriteLine("Soba uspješno izbrisana.");
+                else
+                    Console.WriteLine("Došlo je do nepoznate greške pri brisanju!");
+            }
 
             return MenuAction.PauseAndStay;
         }

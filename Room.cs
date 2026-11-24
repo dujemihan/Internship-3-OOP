@@ -6,8 +6,7 @@ namespace Internship_3_OOP
 {
     internal class Room : IAuditable
     {
-        private static readonly List<Room> _rooms = [];
-        public static readonly IReadOnlyCollection<Room> AllRooms = _rooms;
+        internal static readonly List<Room> _rooms = [];
         public Guid Guid { get; init; } = Guid.NewGuid();
         public DateTime CreationTime { get; init; } = DateTime.Now;
         public DateTime ModificationTime { get; set; } = DateTime.Now;

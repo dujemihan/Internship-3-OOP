@@ -112,7 +112,7 @@
             return ret;
         }
 
-        static string ReadOptionalString(string prompt, string fallback)
+        public static string ReadOptionalString(string prompt, string fallback)
         {
             Console.Write($"{prompt}: ");
             var str = Console.ReadLine()?.Trim();

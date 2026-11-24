@@ -2,8 +2,7 @@ namespace Internship_3_OOP
 {
     internal sealed class Reservation : IAuditable
     {
-        private static readonly List<Reservation> _reservations = [];
-        public static readonly IReadOnlyCollection<Reservation> AllReservations = _reservations;
+        internal static readonly List<Reservation> _reservations = [];
         public Guid Guid { get; init; } = Guid.NewGuid();
         public Guid GuestGuid { get; init; }
         public Guid RoomGuid { get; init; }

@@ -3,9 +3,10 @@ namespace Internship_3_OOP
     internal sealed class Reservation : IAuditable
     {
         private static readonly List<Reservation> _reservations = [];
+        public static readonly IReadOnlyCollection<Reservation> AllReservations = _reservations;
         public Guid Guid { get; init; } = Guid.NewGuid();
-        private Guid GuestGuid { get; init; }
-        private Guid RoomGuid { get; init; }
+        public Guid GuestGuid { get; init; }
+        public Guid RoomGuid { get; init; }
         public DateTime CreationTime { get; init; } = DateTime.Now;
         public DateTime ModificationTime { get; set; } = DateTime.Now;
         public DateTime CheckInDate { get; private set; }
@@ -34,11 +35,6 @@ namespace Internship_3_OOP
             return $"[{Guid.ToString()[..Program.GUID_CHARACTER_COUNT]}] Soba TODO (TODO)" +
                 $"| {CheckInDate:d} - {CheckOutDate:d}" +
                 $"{NightCount} noći | {TotalPrice} € | {Status}";
-        }
-
-        public static IEnumerable<Reservation> GetGuestReservations(Guest guest)
-        {
-            return _reservations.Where(r => r.GuestGuid == guest.Guid);
         }
     }
 }

@@ -102,10 +102,8 @@ namespace Internship_3_OOP
 
             Console.Clear();
 
-            foreach (var reservation in Reservation.GetGuestReservations(context.Guest))
-            {
+            foreach (var reservation in Reservation.AllReservations.Where(r => r.GuestGuid == context.Guest.Guid))
                 Console.WriteLine(reservation);
-            }
 
             return MenuAction.PauseAndStay;
         }

@@ -105,6 +105,7 @@ namespace Internship_3_OOP
             var menu = new Menu(new Dictionary<char, MenuItem>
             {
                 {'1', new MenuItem("Prikaz svih soba", ShowAllRooms)},
+                {'2', new MenuItem("Dodavanje nove sobe", AddNewRoom)},
                 {'4', new MenuItem("Brisanje sobe", DeleteRoom)},
                 {'5', new MenuItem("Povratak na prethodni izbornik", () => MenuAction.Exit)}
             }, "SOBE");
@@ -120,14 +121,44 @@ namespace Internship_3_OOP
             return MenuAction.PauseAndStay;
         }
 
+        static MenuAction AddNewRoom()
+        {
+            Console.Clear();
+
+            var roomNumber = Menu.ReadOptional<int>("Unesite broj sobe (prazno za odustajanje)");
+            if (roomNumber == default)
+                return MenuAction.PauseAndStay;
+
+            var floorNumber = Menu.ReadRequired<int>("Unesite broj kata", "Molimo unesite valjan broj kata!");
+            RoomCategory category;
+            while (!Enum.TryParse(Menu.ReadRequiredString("Unesite kategoriju sobe", "Molimo unesite valjanu kategoriju!"),
+                true, out category)) ;
+            var capacity = Menu.ReadRequired<int>("Unesite kapacitet sobe (broj osoba)", "Molimo unesite kapacitet!");
+            var nightPrice = Menu.ReadRequired<decimal>("Unesite cijenu noćenja", "Molimo unesite cijenu!");
+
+            if (Menu.IsPromptPositive("Želite li dodati sobu?"))
+            {
+                try
+                {
+                    _ = new Room(roomNumber, floorNumber, category, capacity, nightPrice);
+                    Console.WriteLine("Soba uspješno dodana.");
+                } catch (Exception ex)
+                {
+                    Console.WriteLine($"Greška pri dodavanju sobe: {ex.Message}");
+                }
+            }
+
+            return MenuAction.PauseAndStay;
+        }
+
         static MenuAction DeleteRoom()
         {
             Console.Clear();
             ShowAllRooms();
             Console.WriteLine();
 
-            var targetGuid = Menu.ReadOptionalString("Unesite ID sobe (prazno za odustajanje)", "");
-            if (targetGuid == "")
+            var targetGuid = Menu.ReadOptionalString("Unesite ID sobe (prazno za odustajanje)");
+            if (targetGuid is null)
                 return MenuAction.PauseAndStay;
 
             Console.WriteLine();    

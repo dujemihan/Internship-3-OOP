@@ -34,16 +34,11 @@ namespace Internship_3_OOP
             _rooms.Add(this);
         }
 
-        public bool IsOccupied(DateTime start, DateTime end)
-        {
-            foreach (var reservation in Reservation._reservations.Where(r => r.RoomGuid == Guid))
-            {
-                if (reservation.CheckOutDate > start || reservation.CheckInDate > end)
-                    return true;
-            }
-
-            return false;
-        }
+        public bool IsOccupied(DateTime start, DateTime end) =>
+            Reservation._reservations.Any(r =>
+                r.RoomGuid == Guid &&
+                start < r.CheckOutDate &&
+                end > r.CheckInDate);
 
         public override string ToString()
         {

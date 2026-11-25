@@ -461,12 +461,29 @@ namespace Internship_3_OOP
         {
             var menu = new Menu(new Dictionary<char, MenuItem>
             {
+                ['1'] = new("Prikaz svih smjena", ShowAllShifts),
                 ['2'] = new("Kreiranje nove smjene", AddNewShift),
                 ['3'] = new("Dodavanje zaposlenika", AddNewEmployee),
                 ['4'] = new("Povratak na prethodni izbornik", () => MenuAction.Exit)
             }, "OSOBLJE");
 
             return menu.Run();
+        }
+
+        static MenuAction ShowAllShifts()
+        {
+            Console.Clear();
+
+            if (Shift.All.Count == 0)
+            {
+                Console.WriteLine("Nema smjena.");
+                return MenuAction.PauseAndStay;
+            }
+
+            foreach (var shift in Shift.All)
+                Console.WriteLine(shift);
+
+            return MenuAction.PauseAndStay;
         }
 
         static MenuAction AddNewShift()

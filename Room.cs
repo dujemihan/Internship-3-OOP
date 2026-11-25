@@ -45,7 +45,8 @@ namespace Internship_3_OOP
             return $"[{Guid.ToString()[..Program.GUID_CHARACTER_COUNT]}] Soba {RoomNumber} " +
                 $"| {FloorNumber}. kat | {Category.GetDisplayName()} | " +
                 $"{(Capacity % 10 == 1 ? $"{Capacity} osoba" : $"{Capacity} osobe")} | " +
-                $"{NightPrice} €/noć | broj rezervacija: TODO";
+                $"{NightPrice} €/noć | broj rezervacija: " +
+                $"{Reservation._reservations.Where(r => r.RoomGuid == Guid).Count()}";
         }
     }
 }

@@ -361,9 +361,7 @@ namespace Internship_3_OOP
                 return MenuAction.PauseAndStay;
 
             var floorNumber = Menu.ReadRequired<int>("Unesite broj kata", "Molimo unesite valjan broj kata!");
-            RoomCategory category;
-            while (!Enum.TryParse(Menu.ReadRequiredString("Unesite kategoriju sobe", "Molimo unesite valjanu kategoriju!"),
-                true, out category)) ;
+            var category = Menu.ReadRequiredEnum<RoomCategory>("Unesite kategoriju sobe", "Molimo unesite valjanu kategoriju!");
             var capacity = Menu.ReadRequired<int>("Unesite kapacitet sobe (broj osoba)", "Molimo unesite kapacitet!");
             var nightPrice = Menu.ReadRequired<decimal>("Unesite cijenu noćenja", "Molimo unesite cijenu!");
 

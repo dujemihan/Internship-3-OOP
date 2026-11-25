@@ -65,7 +65,16 @@
                 Console.WriteLine();
                 choice = char.ToLower(choice);
                 if (items.TryGetValue(choice, out var item))
-                    return item.Action(context);
+                {
+                    try
+                    {
+                        return item.Action(context);
+                    } catch (Exception ex)
+                    {
+                        Console.WriteLine($"Meni je vratio grešku: {ex.Message}");
+                        return MenuAction.PauseAndStay;
+                    }
+                }
                 else
                     Console.WriteLine("Molimo odaberite valjanu opciju!");
             }

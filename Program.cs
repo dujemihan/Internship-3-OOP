@@ -1,6 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Internship_3_OOP
@@ -463,11 +461,53 @@ namespace Internship_3_OOP
         {
             var menu = new Menu(new Dictionary<char, MenuItem>
             {
+                ['2'] = new("Kreiranje nove smjene", AddNewShift),
                 ['3'] = new("Dodavanje zaposlenika", AddNewEmployee),
                 ['4'] = new("Povratak na prethodni izbornik", () => MenuAction.Exit)
             }, "OSOBLJE");
 
             return menu.Run();
+        }
+
+        static MenuAction AddNewShift()
+        {
+            var receptionists = Employee.All.Where(e => e.Position == EmployeePosition.Receptionist).ToList();
+            var stewards = Employee.All.Where(e => e.Position == EmployeePosition.Steward).ToList();
+            var cooks = Employee.All.Where(e => e.Position == EmployeePosition.Cook).ToList();
+
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(receptionists.Count, "Broj recepcionista/ica");
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(cooks.Count, "Broj kuhara/ica");
+            ArgumentOutOfRangeException.ThrowIfLessThan(stewards.Count, 2, "Broj sobara/ica");
+
+            var receptionist = Menu.SelectFromList(receptionists, "Odaberite recepcionista/icu");
+            var stewardA = Menu.SelectFromList(stewards, "Odaberite sobara/icu");
+            stewards.Remove(stewardA);
+            var stewardB = Menu.SelectFromList(stewards, "Odaberite drugog/u sobara/icu");
+            var cook = Menu.SelectFromList(cooks, "Odaberite kuhara/icu");
+            var shiftDate = Menu.ReadRequiredMatching<DateOnly>("Unesite datum smjene", 
+                dt => dt >= DateOnly.FromDateTime(DateTime.Today), "Unesite datum",
+                "Datum mora biti u budućnosti!");
+            var shiftType = Menu.IsPromptPositive("Je li smjena popodnevna?");
+
+            if (Menu.IsPromptPositive("Želite li dodati smjenu?"))
+            {
+                _ = new Shift
+                {
+                    EmployeeGuids =
+                    {
+                        receptionist.Guid,
+                        stewardA.Guid,
+                        stewardB.Guid,
+                        cook.Guid
+                    },
+                    ShiftDate = shiftDate,
+                    IsAfternoon = shiftType
+                };
+                Console.WriteLine("Smjena uspješno dodana.");
+                return MenuAction.PauseAndStay;
+            }
+
+            return MenuAction.Stay;
         }
 
         static MenuAction AddNewEmployee()
@@ -522,6 +562,51 @@ namespace Internship_3_OOP
             _ = new Reservation(MateM, RoomE, new(2026, 12, 12), new(2026, 12, 15), false);
             _ = new Reservation(FranjoF, RoomB, new(2026, 12, 3), new(2026, 12, 5), false);
             _ = new Reservation(IvicaH, RoomD, new(2026, 12, 1), new(2026, 12, 5), false);
+
+            var Receptionist = new Employee
+            {
+                Name = "Ante",
+                Surname = "Antić",
+                BirthYear = 1984,
+                Position = EmployeePosition.Receptionist,
+                Gender = Gender.Male
+            };
+            var StewardA = new Employee
+            {
+                Name = "Ana",
+                Surname = "Anić",
+                BirthYear = 1979,
+                Position = EmployeePosition.Steward,
+                Gender = Gender.Female
+            };
+            var StewardB = new Employee
+            {
+                Name = "Matea",
+                Surname = "Matić",
+                BirthYear = 1988,
+                Position = EmployeePosition.Steward,
+                Gender = Gender.Female
+            };
+            var Cook = new Employee
+            {
+                Name = "Mladen",
+                Surname = "Grubišić",
+                BirthYear = 1975,
+                Position = EmployeePosition.Cook,
+                Gender = Gender.Male
+            };
+
+            var Shift = new Shift
+            {
+                IsAfternoon = true,
+                ShiftDate = new DateOnly(2026, 12, 10),
+                EmployeeGuids = [
+                    Cook.Guid,
+                    StewardB.Guid,
+                    StewardA.Guid,
+                    Receptionist.Guid
+                ]
+            };
         }
     }
 }

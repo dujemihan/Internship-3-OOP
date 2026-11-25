@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Internship_3_OOP
 {
-    internal class Program
+    internal static class Program
     {
         public static readonly int GUID_CHARACTER_COUNT = 8;
 
@@ -144,6 +144,7 @@ namespace Internship_3_OOP
                 ['1'] = new("Prikaz svih rezervacija", ShowAllReservations),
                 ['2'] = new("Dodavanje rezervacije", AddNewReservation),
                 ['3'] = new("Pretraživanje rezervacija", SearchReservations),
+                ['4'] = new("Uređivanje rezervacija", EditReservation),
                 ['5'] = new("Brisanje rezervacije", DeleteReservation),
                 ['6'] = new("Povratak na prethodni izbornik", () => MenuAction.Exit)
             }, "REZERVACIJE");
@@ -246,6 +247,47 @@ namespace Internship_3_OOP
 
             foreach (var reservation in Reservation._reservations.Where(r => r.GuestGuid == guest.Guid))
                 Console.WriteLine(reservation);
+
+            return MenuAction.PauseAndStay;
+        }
+
+        static MenuAction EditReservation()
+        {
+            var reservation = Menu.SelectFromList(Reservation._reservations);
+            var room = Room._rooms.FirstOrDefault(r => r.Guid == reservation.RoomGuid);
+            ArgumentNullException.ThrowIfNull(room);
+
+            DateTime checkIn, checkOut;
+            while (true)
+            {
+                checkIn = Menu.ReadRequiredMatching<DateTime>("Unesite novi datum prijave",
+                    dt => dt >= DateTime.Now, "Prijava mora biti u budućnosti!");
+                checkOut = Menu.ReadRequiredMatching<DateTime>("Unesite novi datum odjave",
+                    dt => dt > checkIn, null, "Odjava mora biti nakon prijave!");
+
+                if (room.IsOccupied(checkIn, checkOut))
+                    Console.WriteLine("Soba je zauzeta u tom rasponu!");
+                else
+                    break;
+            }
+
+            if (Menu.IsPromptPositive("Želite li urediti rezervaciju?"))
+            {
+                try
+                {
+                    ReplaceEntity(Reservation._reservations, reservation,
+                    reservation =>
+                    {
+                        reservation.CheckInDate = checkIn;
+                        reservation.CheckOutDate = checkOut;
+                        return reservation;
+                    });
+                    Console.WriteLine("Rezervacija uspješno promijenjena.");
+                } catch (Exception ex)
+                {
+                    Console.WriteLine($"Došlo je do greške: {ex.Message}");
+                }
+            }
 
             return MenuAction.PauseAndStay;
         }
@@ -408,6 +450,16 @@ namespace Internship_3_OOP
             }
 
             return MenuAction.PauseAndStay;
+        }
+
+        static void ReplaceEntity<T>(List<T> list, T item, Func<T, T> modification)
+        {
+            ArgumentNullException.ThrowIfNull(list);
+            ArgumentNullException.ThrowIfNull(modification);
+
+            var index = list.IndexOf(item);
+            item = modification(item);
+            list[index] = item;
         }
 
         static void InitializeTestData()

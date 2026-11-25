@@ -8,8 +8,8 @@ namespace Internship_3_OOP
         public Guid RoomGuid { get; init; }
         public DateTime CreationTime { get; init; } = DateTime.Now;
         public DateTime ModificationTime { get; set; } = DateTime.Now;
-        public DateTime CheckInDate { get; private set; }
-        public DateTime CheckOutDate { get; private set; }
+        public DateTime CheckInDate { get; set; }
+        public DateTime CheckOutDate { get; set; }
         public decimal TotalPrice { get; private set; }
         public ReservationStatus Status { get; set; } = ReservationStatus.Confirmed;
 
@@ -38,7 +38,10 @@ namespace Internship_3_OOP
 
         public override string ToString()
         {
-            return $"[{Guid.ToString()[..Program.GUID_CHARACTER_COUNT]}] Soba TODO (TODO)" +
+            var room = Room._rooms.FirstOrDefault(r => r.Guid == RoomGuid);
+            ArgumentNullException.ThrowIfNull(room);
+
+            return $"[{Guid.ToString()[..Program.GUID_CHARACTER_COUNT]}] Soba {room.RoomNumber} ({room.FloorNumber}. kat) " +
                 $"| {CheckInDate:d} - {CheckOutDate:d} | " +
                 $"{(CheckOutDate - CheckInDate).Days} noći | {TotalPrice} € | {Status.GetDisplayName()}";
         }

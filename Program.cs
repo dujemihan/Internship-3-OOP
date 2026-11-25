@@ -220,6 +220,8 @@ namespace Internship_3_OOP
 
         static MenuAction SearchReservationsById()
         {
+            Console.Clear();
+
             var guid = Menu.ReadOptionalString("Unesite ID (prazno = odustani)");
             if (string.IsNullOrWhiteSpace(guid))
                 return MenuAction.Stay;
@@ -239,6 +241,8 @@ namespace Internship_3_OOP
 
         static MenuAction SearchReservationsBySurname()
         {
+            Console.Clear();
+
             var surname = Menu.ReadOptionalString("Unesite prezime (prazno = odustani)");
             if (string.IsNullOrWhiteSpace(surname))
                 return MenuAction.Stay;
@@ -258,6 +262,8 @@ namespace Internship_3_OOP
 
         static MenuAction EditReservation()
         {
+            Console.Clear();
+
             var reservation = Menu.SelectFromList(Reservation._reservations);
             var room = Room._rooms.FirstOrDefault(r => r.Guid == reservation.RoomGuid);
             ArgumentNullException.ThrowIfNull(room);
@@ -346,6 +352,8 @@ namespace Internship_3_OOP
 
         static MenuAction ShowAllRooms()
         {
+            Console.Clear();
+
             foreach (var room in Room._rooms)
                 Console.WriteLine(room);
 
@@ -394,6 +402,8 @@ namespace Internship_3_OOP
 
         static MenuAction SearchRoomsByNumber()
         {
+            Console.Clear();
+
             var number = Menu.ReadOptional<int>("Unesite broj sobe (prazno za odustajanje)");
             if (number == default)
                 return MenuAction.Stay;
@@ -493,6 +503,8 @@ namespace Internship_3_OOP
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(receptionists.Count, "Broj recepcionista/ica");
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(cooks.Count, "Broj kuhara/ica");
             ArgumentOutOfRangeException.ThrowIfLessThan(stewards.Count, 2, "Broj sobara/ica");
+
+            Console.Clear();
 
             var receptionist = Menu.SelectFromList(receptionists, "Odaberite recepcionista/icu");
             var stewardA = Menu.SelectFromList(stewards, "Odaberite sobara/icu");

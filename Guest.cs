@@ -48,5 +48,8 @@ namespace Internship_3_OOP
 
         private static bool IsEmailUnique(string email) =>
             !_guests.Any(g => g.Email == email);
+
+        public override string ToString() =>
+            $"{Surname}, {Name} ({BirthYear})";
     }
 }

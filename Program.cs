@@ -1,4 +1,5 @@
-﻿using System.Reflection.Metadata.Ecma335;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -78,7 +79,7 @@ namespace Internship_3_OOP
                 {'1', new("Moje rezervacije", PrintGuestReservations)},
                 {'2', new("Nova rezervacija", () => throw new NotImplementedException())},
                 {'3', new("Pretraživanje soba", () => throw new NotImplementedException())},
-                {'4', new("Otkazivanje rezervacije", () => throw new NotImplementedException())},
+                {'4', new("Otkazivanje rezervacije", CancelReservation)},
                 {'5', new("Povratak na prethodni izbornik", () => MenuAction.Exit)}
             }, $"GOST: {guest.Surname}, {guest.Name}");
 
@@ -97,6 +98,41 @@ namespace Internship_3_OOP
 
             foreach (var reservation in Reservation._reservations.Where(r => r.GuestGuid == context.Guest.Guid))
                 Console.WriteLine(reservation);
+
+            return MenuAction.PauseAndStay;
+        }
+
+        static MenuAction CancelReservation([NotNull] MenuContext? context)
+        {
+            Console.Clear();
+
+            ArgumentNullException.ThrowIfNull(context);
+            ArgumentNullException.ThrowIfNull(context.Guest);
+
+            var reservations = Reservation._reservations.Where(
+                r => r.GuestGuid == context.Guest.Guid &&
+                r.Status == ReservationStatus.Confirmed &&
+                r.CheckInDate > DateTime.Now.AddDays(2)).ToList();
+            if (reservations.Count == 0)
+            {
+                Console.WriteLine("Nemate rezervacija koje se mogu poništiti.");
+                return MenuAction.PauseAndStay;
+            }
+
+            var reservation = Menu.SelectFromList(reservations);
+            if (Menu.IsPromptPositive("Želite li poništiti rezervaciju?"))
+            {
+                try
+                {
+                    var index = Reservation._reservations.IndexOf(reservation);
+                    reservation.Status = ReservationStatus.Canceled;
+                    Reservation._reservations[index] = reservation;
+                    Console.WriteLine("Rezervacija uspješno otkazana.");
+                } catch (Exception ex)
+                {
+                    Console.WriteLine($"Došlo je do greške: {ex.Message}");
+                }
+            }
 
             return MenuAction.PauseAndStay;
         }

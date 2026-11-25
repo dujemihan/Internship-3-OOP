@@ -11,7 +11,7 @@ namespace Internship_3_OOP
         public DateTime CheckInDate { get; private set; }
         public DateTime CheckOutDate { get; private set; }
         public decimal TotalPrice { get; private set; }
-        public ReservationStatus Status { get; private set; } = ReservationStatus.Confirmed;
+        public ReservationStatus Status { get; set; } = ReservationStatus.Confirmed;
 
         public Reservation(Guest guest, Room room, DateTime checkIn, DateTime checkOut, bool disallowPast = true)
         {

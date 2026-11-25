@@ -71,6 +71,22 @@
             }
         }
 
+        public static int SelectIndexFromList<T>(IList<T> list,
+            string prompt = "Unesite odabir",
+            string invalidMsg = "Molimo unesite valjan odabir!") where T : class
+        {
+            for (int i = 0; i < list.Count; i++)
+                Console.WriteLine($"{i + 1}. {list[i]}");
+
+            int index;
+            do
+            {
+                index = ReadRequired<int>(prompt, invalidMsg);
+            } while (list.ElementAtOrDefault(index) == default);
+
+            return index;
+        }
+
         public static void WaitForKey()
         {
             Console.WriteLine("Pritisnite bilo koju tipku za nastavak...");

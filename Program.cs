@@ -77,8 +77,8 @@ namespace Internship_3_OOP
             var menu = new Menu(new Dictionary<char, MenuItem>
             {
                 {'1', new("Moje rezervacije", PrintGuestReservations)},
-                {'2', new("Nova rezervacija", () => throw new NotImplementedException())},
-                {'3', new("Pretraživanje soba", () => throw new NotImplementedException())},
+                {'2', new("Nova rezervacija", AddNewReservation)},
+                {'3', new("Pretraživanje soba", SearchRooms)},
                 {'4', new("Otkazivanje rezervacije", CancelReservation)},
                 {'5', new("Povratak na prethodni izbornik", () => MenuAction.Exit)}
             }, $"GOST: {guest.Surname}, {guest.Name}");
@@ -162,17 +162,23 @@ namespace Internship_3_OOP
             return MenuAction.PauseAndStay;
         }
 
-        static MenuAction AddNewReservation()
+        static MenuAction AddNewReservation(MenuContext? context = null)
         {
+            bool HasPassedGuest = context is not null;
+            Guest? guest = context?.Guest;
             Console.Clear();
 
-            var guest = Menu.SelectFromList(Guest._guests);
+            if (!HasPassedGuest)
+                guest = Menu.SelectFromList(Guest._guests);
+
+            ArgumentNullException.ThrowIfNull(guest);
+
             var checkIn = Menu.ReadRequired<DateTime>("Unesite datum prijave", "Molimo unesite datum!");
             var checkOut = Menu.ReadRequired<DateTime>("Unesite datum odjave", "Molimo unesite datum!");
 
             if (guest.HasReservation(checkIn, checkOut))
             {
-                Console.WriteLine("Gost već ima rezervaciju u tom periodu.");
+                Console.WriteLine($"{(HasPassedGuest ? "Već imate" : "Gost već ima")} rezervaciju u tom periodu!");
                 return MenuAction.PauseAndStay;
             }
 

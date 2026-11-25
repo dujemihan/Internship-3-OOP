@@ -148,5 +148,22 @@
         {
             return T.TryParse(ReadOptionalString(prompt), null, out var ret) ? ret : fallback;
         }
+
+        public static T ReadRequiredMatching<T>(string prompt, Predicate<T> condition, string? invalidMsg = null,
+            string? unmatchingMsg = null) where T : IParsable<T>
+        {
+            T? ret;
+
+            while (true)
+            {
+                ret = ReadRequired<T>(prompt, invalidMsg);
+                if (!condition(ret))
+                    Console.WriteLine(unmatchingMsg);
+                else
+                    break;
+            }
+
+            return ret;
+        }
     }
 }

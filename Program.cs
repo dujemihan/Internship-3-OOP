@@ -106,6 +106,7 @@ namespace Internship_3_OOP
             var menu = new Menu(new Dictionary<char, MenuItem>
             {
                 ['1'] = new("Prikaz svih rezervacija", ShowAllReservations),
+                ['2'] = new("Dodavanje rezervacije", AddNewReservation),
                 ['3'] = new("Pretraživanje rezervacija", SearchReservations),
                 ['5'] = new("Brisanje rezervacije", DeleteReservation),
                 ['6'] = new("Povratak na prethodni izbornik", () => MenuAction.Exit)
@@ -120,6 +121,46 @@ namespace Internship_3_OOP
 
             foreach (var reservation in Reservation._reservations)
                 Console.WriteLine(reservation);
+
+            return MenuAction.PauseAndStay;
+        }
+
+        static MenuAction AddNewReservation()
+        {
+            Console.Clear();
+
+            var guest = Menu.SelectFromList(Guest._guests);
+            var checkIn = Menu.ReadRequired<DateTime>("Unesite datum prijave", "Molimo unesite datum!");
+            var checkOut = Menu.ReadRequired<DateTime>("Unesite datum odjave", "Molimo unesite datum!");
+
+            if (guest.HasReservation(checkIn, checkOut))
+            {
+                Console.WriteLine("Gost već ima rezervaciju u tom periodu.");
+                return MenuAction.PauseAndStay;
+            }
+
+            var availRooms = Room._rooms.Where(
+                r => !r.IsOccupied(checkIn, checkOut)).ToList();
+
+            if (availRooms.Count == 0)
+            {
+                Console.WriteLine("Nema slobodnih soba u tom periodu.");
+                return MenuAction.PauseAndStay;
+            }
+
+            var room = Menu.SelectFromList(availRooms);
+
+            if (Menu.IsPromptPositive("Želite li stvoriti rezervaciju"))
+            {
+                try
+                {
+                    _ = new Reservation(guest, room, checkIn, checkOut);
+                    Console.WriteLine("Rezervacija uspješno stvorena.");
+                } catch (Exception ex)
+                {
+                    Console.WriteLine($"Došlo je do greške: {ex.Message}");
+                }
+            }
 
             return MenuAction.PauseAndStay;
         }
@@ -345,11 +386,11 @@ namespace Internship_3_OOP
             var RoomD = new Room(189, 5, RoomCategory.Standard, 4, 65.0m);
             var RoomE = new Room(301, 9, RoomCategory.Suite, 1, 180.0m);
 
-            _ = new Reservation(IvicaH, RoomA, new(2026, 8, 10), new(2026, 8, 17));
-            _ = new Reservation(FranjoF, RoomC, new(2026, 8, 5), new(2026, 8, 8));
-            _ = new Reservation(MateM, RoomE, new(2026, 8, 12), new(2026, 8, 15));
-            _ = new Reservation(FranjoF, RoomB, new(2026, 8, 3), new(2026, 8, 5));
-            _ = new Reservation(IvicaH, RoomD, new(2026, 8, 1), new(2026, 8, 5));
+            _ = new Reservation(IvicaH, RoomA, new(2026, 12, 10), new(2026, 12, 17), false);
+            _ = new Reservation(FranjoF, RoomC, new(2026, 12, 5), new(2026, 12, 8), false);
+            _ = new Reservation(MateM, RoomE, new(2026, 12, 12), new(2026, 12, 15), false);
+            _ = new Reservation(FranjoF, RoomB, new(2026, 12, 3), new(2026, 12, 5), false);
+            _ = new Reservation(IvicaH, RoomD, new(2026, 12, 1), new(2026, 12, 5), false);
         }
     }
 }

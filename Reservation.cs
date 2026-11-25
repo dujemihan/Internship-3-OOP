@@ -13,7 +13,7 @@ namespace Internship_3_OOP
         public decimal TotalPrice { get; private set; }
         public ReservationStatus Status { get; private set; } = ReservationStatus.Confirmed;
 
-        public Reservation(Guest guest, Room room, DateTime checkIn, DateTime checkOut, bool disallowPast = false)
+        public Reservation(Guest guest, Room room, DateTime checkIn, DateTime checkOut, bool disallowPast = true)
         {
             if (disallowPast && (checkIn < DateTime.Today || checkOut < DateTime.Today))
                 throw new ArgumentException("Nije moguće retroaktivno rezervirati.");

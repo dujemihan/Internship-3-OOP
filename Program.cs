@@ -20,7 +20,7 @@ namespace Internship_3_OOP
                 ['2'] = new("Rezervacije", ShowReservationsMenu),
                 ['3'] = new("Sobe", ShowRoomsMenu),
                 ['4'] = new("Osoblje", ShowPersonnelMenu),
-                ['0'] = new("Izlaz iz programa", () => MenuAction.Exit)
+                ['5'] = new("Izlaz iz programa", () => MenuAction.Exit)
             }, "PROGRAM ZA VOĐENJE HOTELA");
 
             menu.Run();
@@ -32,7 +32,7 @@ namespace Internship_3_OOP
             {
                 ['1'] = new("Registracija", RegisterNewGuest),
                 ['2'] = new("Prijava", ShowGuestMenu),
-                ['0'] = new("Povratak", () => MenuAction.Exit)
+                ['3'] = new("Povratak", () => MenuAction.Exit)
             }, "GOSTI");
 
             return menu.Run();
@@ -75,11 +75,11 @@ namespace Internship_3_OOP
 
             var menu = new Menu(new Dictionary<char, MenuItem>
             {
-                {'1', new("Moje rezervacije", PrintGuestReservations)},
-                {'2', new("Nova rezervacija", AddNewReservation)},
-                {'3', new("Pretraživanje soba", SearchRooms)},
-                {'4', new("Otkazivanje rezervacije", CancelReservation)},
-                {'5', new("Povratak na prethodni izbornik", () => MenuAction.Exit)}
+                ['1'] = new("Moje rezervacije", PrintGuestReservations),
+                ['2'] = new("Nova rezervacija", AddNewReservation),
+                ['3'] = new("Pretraživanje soba", SearchRooms),
+                ['4'] = new("Otkazivanje rezervacije", CancelReservation),
+                ['5'] = new("Povratak na prethodni izbornik", () => MenuAction.Exit)
             }, $"GOST: {guest.Surname}, {guest.Name}");
 
             return menu.Run(new MenuContext
@@ -334,11 +334,11 @@ namespace Internship_3_OOP
         {
             var menu = new Menu(new Dictionary<char, MenuItem>
             {
-                {'1', new MenuItem("Prikaz svih soba", ShowAllRooms)},
-                {'2', new MenuItem("Dodavanje nove sobe", AddNewRoom)},
-                {'3', new MenuItem("Pretraživanje soba", SearchRooms)},
-                {'4', new MenuItem("Brisanje sobe", DeleteRoom)},
-                {'5', new MenuItem("Povratak na prethodni izbornik", () => MenuAction.Exit)}
+                ['1'] = new MenuItem("Prikaz svih soba", ShowAllRooms),
+                ['2'] = new MenuItem("Dodavanje nove sobe", AddNewRoom),
+                ['3'] = new MenuItem("Pretraživanje soba", SearchRooms),
+                ['4'] = new MenuItem("Brisanje sobe", DeleteRoom),
+                ['5'] = new MenuItem("Povratak na prethodni izbornik", () => MenuAction.Exit)
             }, "SOBE");
 
             return menu.Run();

@@ -71,20 +71,20 @@
             }
         }
 
-        public static int SelectIndexFromList<T>(IList<T> list,
+        public static T SelectFromList<T>(IList<T> list,
             string prompt = "Unesite odabir",
             string invalidMsg = "Molimo unesite valjan odabir!") where T : class
         {
             for (int i = 0; i < list.Count; i++)
                 Console.WriteLine($"{i + 1}. {list[i]}");
 
-            int index;
+            T? element;
             do
             {
-                index = ReadRequired<int>(prompt, invalidMsg);
-            } while (list.ElementAtOrDefault(index) == default);
+                element = list.ElementAtOrDefault(ReadRequired<int>(prompt, invalidMsg) - 1);
+            } while (element == default);
 
-            return index;
+            return element;
         }
 
         public static void WaitForKey()

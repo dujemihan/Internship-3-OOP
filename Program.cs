@@ -21,6 +21,7 @@ namespace Internship_3_OOP
                 ['1'] = new("Gosti", ShowGuestsMenu),
                 ['2'] = new("Rezervacije", ShowReservationsMenu),
                 ['3'] = new("Sobe", ShowRoomsMenu),
+                ['4'] = new("Osoblje", ShowPersonnelMenu),
                 ['0'] = new("Izlaz iz programa", () => MenuAction.Exit)
             }, "PROGRAM ZA VOĐENJE HOTELA");
 
@@ -456,6 +457,42 @@ namespace Internship_3_OOP
             }
 
             return MenuAction.PauseAndStay;
+        }
+
+        static MenuAction ShowPersonnelMenu()
+        {
+            var menu = new Menu(new Dictionary<char, MenuItem>
+            {
+                ['3'] = new("Dodavanje zaposlenika", AddNewEmployee),
+                ['4'] = new("Povratak na prethodni izbornik", () => MenuAction.Exit)
+            }, "OSOBLJE");
+
+            return menu.Run();
+        }
+
+        static MenuAction AddNewEmployee()
+        {
+            var name = Menu.ReadRequiredString("Unesite ime", "Molimo unesite ime!");
+            var surname = Menu.ReadRequiredString("Unesite prezime", "Molimo unesite prezime!");
+            var birthYear = Menu.ReadRequired<int>("Unesite godinu rođenja", "Molimo unesite godinu!");
+            var gender = Menu.ReadRequiredEnum<Gender>("Unesite spol", "Molimo unesite spol!");
+            var position = Menu.ReadRequiredEnum<EmployeePosition>("Unesite poziciju", "Molimo unesite poziciju!");
+
+            if (Menu.IsPromptPositive("Želite li dodati zaposlenika?"))
+            {
+                _ = new Employee
+                {
+                    Name = name,
+                    Surname = surname,
+                    BirthYear = birthYear,
+                    Gender = gender,
+                    Position = position
+                };
+                Console.WriteLine("Zaposlenik uspješno dodan.");
+                return MenuAction.PauseAndStay;
+            }
+            else
+                return MenuAction.Stay;
         }
 
         static void ReplaceEntity<T>(List<T> list, T item, Func<T, T> modification)

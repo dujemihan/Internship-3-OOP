@@ -149,6 +149,15 @@
             return T.TryParse(ReadOptionalString(prompt), null, out var ret) ? ret : fallback;
         }
 
+        public static T ReadRequiredEnum<T>(string prompt, string? invalidMsg = null) where T : struct, Enum
+        {
+            T ret;
+
+            Console.WriteLine($"Moguće vrijednosti: {string.Join(',', Enum.GetValues<T>())}");
+            while (!Enum.TryParse(ReadRequiredString(prompt, invalidMsg), true, out ret)) ;
+            return ret;
+        }
+
         public static T ReadRequiredMatching<T>(string prompt, Predicate<T> condition, string? invalidMsg = null,
             string? unmatchingMsg = null) where T : IParsable<T>
         {

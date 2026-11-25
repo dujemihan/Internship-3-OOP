@@ -107,7 +107,7 @@
             }
         }
 
-        public static string ReadRequiredString(string prompt, string? invalidMsg)
+        public static string ReadRequiredString(string prompt, string? invalidMsg = null)
         {
             while (true)
             {
@@ -134,7 +134,7 @@
                 return str;
         }
 
-        public static T ReadRequired<T>(string prompt, string invalidMsg) where T : IParsable<T>
+        public static T ReadRequired<T>(string prompt, string? invalidMsg = null) where T : IParsable<T>
         {
             T? ret;
 

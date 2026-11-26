@@ -437,7 +437,7 @@ namespace Internship_3_OOP
                 return MenuAction.Stay;
 
             var rooms = Room.All.Where(r => r.Category == category);
-            if (rooms.Any())
+            if (!rooms.Any())
             {
                 Console.WriteLine("Nema soba te kategorije.");
                 return MenuAction.PauseAndStay;

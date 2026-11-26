@@ -95,7 +95,7 @@ namespace Internship_3_OOP
 
             Console.Clear();
 
-            foreach (var reservation in Reservation._reservations.Where(r => r.GuestGuid == context.Guest.Guid))
+            foreach (var reservation in Reservation.All.Where(r => r.GuestGuid == context.Guest.Guid))
                 Console.WriteLine(reservation);
 
             return MenuAction.PauseAndStay;
@@ -108,7 +108,7 @@ namespace Internship_3_OOP
             ArgumentNullException.ThrowIfNull(context);
             ArgumentNullException.ThrowIfNull(context.Guest);
 
-            var reservations = Reservation._reservations.Where(
+            var reservations = Reservation.All.Where(
                 r => r.GuestGuid == context.Guest.Guid &&
                 r.Status == ReservationStatus.Confirmed &&
                 r.CheckInDate > DateTime.Now.AddDays(2)).ToList();
@@ -123,9 +123,10 @@ namespace Internship_3_OOP
             {
                 try
                 {
-                    var index = Reservation._reservations.IndexOf(reservation);
+                    var index = Reservation.All.IndexOf(reservation);
                     reservation.Status = ReservationStatus.Canceled;
-                    Reservation._reservations[index] = reservation;
+                    reservation.ModificationTime = DateTime.Now;
+                    Reservation.All[index] = reservation;
                     Console.WriteLine("Rezervacija uspješno otkazana.");
                 } catch (Exception ex)
                 {
@@ -155,7 +156,7 @@ namespace Internship_3_OOP
         {
             Console.Clear();
 
-            foreach (var reservation in Reservation._reservations)
+            foreach (var reservation in Reservation.All)
                 Console.WriteLine(reservation);
 
             return MenuAction.PauseAndStay;
@@ -168,21 +169,21 @@ namespace Internship_3_OOP
             Console.Clear();
 
             if (!HasPassedGuest)
-                guest = Menu.SelectFromList(Guest._guests);
+                guest = Menu.SelectFromList(Guest.All);
 
             ArgumentNullException.ThrowIfNull(guest);
 
             var checkIn = Menu.ReadRequired<DateTime>("Unesite datum prijave", "Molimo unesite datum!");
             var checkOut = Menu.ReadRequired<DateTime>("Unesite datum odjave", "Molimo unesite datum!");
 
-            if (guest.HasReservation(checkIn, checkOut))
+            if (guest.HasReservation(checkIn, checkOut, Reservation.All))
             {
                 Console.WriteLine($"{(HasPassedGuest ? "Već imate" : "Gost već ima")} rezervaciju u tom periodu!");
                 return MenuAction.PauseAndStay;
             }
 
-            var availRooms = Room._rooms.Where(
-                r => !r.IsOccupied(checkIn, checkOut)).ToList();
+            var availRooms = Room.All.Where(
+                r => !r.IsOccupied(checkIn, checkOut, Reservation.All)).ToList();
 
             if (availRooms.Count == 0)
             {
@@ -226,7 +227,7 @@ namespace Internship_3_OOP
             if (string.IsNullOrWhiteSpace(guid))
                 return MenuAction.Stay;
 
-            var reservation = Reservation._reservations.FirstOrDefault(
+            var reservation = Reservation.All.FirstOrDefault(
                 r => r.Guid.ToString()[..GUID_CHARACTER_COUNT] == guid);
             if (reservation == default)
             {
@@ -247,14 +248,15 @@ namespace Internship_3_OOP
             if (string.IsNullOrWhiteSpace(surname))
                 return MenuAction.Stay;
 
-            var guest = Guest._guests.FirstOrDefault(g => g.Surname.Equals(surname, StringComparison.CurrentCultureIgnoreCase));
-            if (guest == default)
+            var guests = Guest.All.Where(g => g.Surname.Equals(surname, StringComparison.CurrentCultureIgnoreCase));
+            if (guests == default)
             {
-                Console.WriteLine("Taj gost ne postoji.");
+                Console.WriteLine("Nema gostiju s tim prezimenom.");
                 return MenuAction.PauseAndStay;
             }
+            var guest = Menu.SelectFromList(guests.ToList(), "Odaberite gosta");
 
-            foreach (var reservation in Reservation._reservations.Where(r => r.GuestGuid == guest.Guid))
+            foreach (var reservation in Reservation.All.Where(r => r.GuestGuid == guest.Guid))
                 Console.WriteLine(reservation);
 
             return MenuAction.PauseAndStay;
@@ -264,9 +266,11 @@ namespace Internship_3_OOP
         {
             Console.Clear();
 
-            var reservation = Menu.SelectFromList(Reservation._reservations);
-            var room = Room._rooms.FirstOrDefault(r => r.Guid == reservation.RoomGuid);
+            var reservation = Menu.SelectFromList(Reservation.All);
+            var room = Room.All.FirstOrDefault(r => r.Guid == reservation.RoomGuid);
+            var guest = Guest.All.FirstOrDefault(g => g.Guid == reservation.GuestGuid);
             ArgumentNullException.ThrowIfNull(room);
+            ArgumentNullException.ThrowIfNull(guest);
 
             DateTime checkIn, checkOut;
             while (true)
@@ -276,8 +280,12 @@ namespace Internship_3_OOP
                 checkOut = Menu.ReadRequiredMatching<DateTime>("Unesite novi datum odjave",
                     dt => dt > checkIn, null, "Odjava mora biti nakon prijave!");
 
-                if (room.IsOccupied(checkIn, checkOut))
+                if (room.IsOccupied(checkIn, checkOut,
+                    Reservation.All.Where(r => r.Guid != reservation.Guid)))
                     Console.WriteLine("Soba je zauzeta u tom rasponu!");
+                else if (guest.HasReservation(checkIn, checkOut,
+                    Reservation.All.Where(r => r.Guid != reservation.Guid)))
+                    Console.WriteLine("Gost već ima rezervaciju u tom rasponu!");
                 else
                     break;
             }
@@ -286,11 +294,13 @@ namespace Internship_3_OOP
             {
                 try
                 {
-                    ReplaceEntity(Reservation._reservations, reservation,
+                    ReplaceEntity(Reservation.All, reservation,
                     reservation =>
                     {
                         reservation.CheckInDate = checkIn;
                         reservation.CheckOutDate = checkOut;
+                        reservation.TotalPrice = (checkOut - checkIn).Days * room.NightPrice;
+                        reservation.ModificationTime = DateTime.Now;
                         return reservation;
                     });
                     Console.WriteLine("Rezervacija uspješno promijenjena.");
@@ -314,7 +324,7 @@ namespace Internship_3_OOP
             if (string.IsNullOrEmpty(guid))
                 return MenuAction.PauseAndStay;
 
-            var target = Reservation._reservations.FirstOrDefault(
+            var target = Reservation.All.FirstOrDefault(
                 r => r.Guid.ToString()[..Program.GUID_CHARACTER_COUNT] == guid);
             if (target == default)
             {
@@ -325,7 +335,7 @@ namespace Internship_3_OOP
             Console.WriteLine(target);
             if (Menu.IsPromptPositive("Želite li obrisati ovu rezervaciju?"))
             {
-                if (Reservation._reservations.Remove(target))
+                if (Reservation.All.Remove(target))
                     Console.WriteLine("Rezervacija uspješno obrisana.");
                 else
                     Console.WriteLine("Došlo je do greške pri brisanju!");
@@ -354,7 +364,7 @@ namespace Internship_3_OOP
         {
             Console.Clear();
 
-            foreach (var room in Room._rooms)
+            foreach (var room in Room.All)
                 Console.WriteLine(room);
 
             return MenuAction.PauseAndStay;
@@ -408,7 +418,7 @@ namespace Internship_3_OOP
             if (number == default)
                 return MenuAction.Stay;
 
-            var room = Room._rooms.FirstOrDefault(r => r.RoomNumber == number);
+            var room = Room.All.FirstOrDefault(r => r.RoomNumber == number);
             if (room == default)
             {
                 Console.WriteLine("Soba nije pronađena.");
@@ -428,7 +438,14 @@ namespace Internship_3_OOP
                 true, out RoomCategory category))
                 return MenuAction.Stay;
 
-            foreach (var room in Room._rooms.Where(r => r.Category == category))
+            var rooms = Room.All.Where(r => r.Category == category);
+            if (rooms.Any())
+            {
+                Console.WriteLine("Nema soba te kategorije.");
+                return MenuAction.PauseAndStay;
+            }
+
+            foreach (var room in rooms)
                 Console.WriteLine(room);
 
             return MenuAction.PauseAndStay;
@@ -445,7 +462,7 @@ namespace Internship_3_OOP
                 return MenuAction.PauseAndStay;
 
             Console.WriteLine();    
-            var target = Room._rooms.FirstOrDefault(
+            var target = Room.All.FirstOrDefault(
                 r => r.Guid.ToString()[..GUID_CHARACTER_COUNT].SequenceEqual(targetGuid));
             if (target == default)
             {
@@ -453,10 +470,18 @@ namespace Internship_3_OOP
                 return MenuAction.PauseAndStay;
             }
 
+            if (Reservation.All.Any(r => r.RoomGuid == target.Guid))
+            {
+                Console.WriteLine("Postoje rezervacije s ovom sobom!");
+                foreach (var reservation in Reservation.All.Where(r => r.RoomGuid == target.Guid))
+                    Console.WriteLine(reservation);
+                return MenuAction.PauseAndStay;
+            }
+
             Console.WriteLine(target);
             if (Menu.IsPromptPositive("Želite li obrisati ovu sobu?"))
             {
-                if (Room._rooms.Remove(target))
+                if (Room.All.Remove(target))
                     Console.WriteLine("Soba uspješno izbrisana.");
                 else
                     Console.WriteLine("Došlo je do nepoznate greške pri brisanju!");

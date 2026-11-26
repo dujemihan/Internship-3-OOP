@@ -84,6 +84,12 @@
             string prompt = "Unesite odabir",
             string invalidMsg = "Molimo unesite valjan odabir!") where T : class
         {
+            if (list.Count == 0)
+                throw new Exception("Nema ničeg za izabrati!");
+
+            if (list.Count == 1)
+                return list.ElementAt(0);
+
             for (int i = 0; i < list.Count; i++)
                 Console.WriteLine($"{i + 1}. {list[i]}");
 

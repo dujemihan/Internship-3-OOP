@@ -4,7 +4,7 @@ namespace Internship_3_OOP
 {
     internal sealed class Guest : IAuditable
     {
-        public static readonly List<Guest> _guests = [];
+        public static readonly List<Guest> All = [];
         public Guid Guid { get; init; } = Guid.NewGuid();
         public DateTime CreationTime { get; init; } = DateTime.Now;
         public DateTime ModificationTime { get; set; } = DateTime.Now;
@@ -31,23 +31,24 @@ namespace Internship_3_OOP
             Email = email;
             Password = password;
 
-            _guests.Add(this);
+            All.Add(this);
         }
 
         public static bool TryLogin(string email, string password, [NotNullWhen(true)] out Guest? guest)
         {
-            guest = _guests.FirstOrDefault(g => g.Email == email && g.Password == password);
+            guest = All.FirstOrDefault(g => g.Email == email && g.Password == password);
             return guest != default;
         }
 
-        public bool HasReservation(DateTime start, DateTime end) =>
-            Reservation._reservations.Any(r =>
+        public bool HasReservation(DateTime start, DateTime end, IEnumerable<Reservation> compList) =>
+            compList.Any(r =>
                 r.GuestGuid == Guid &&
+                r.Status != ReservationStatus.Canceled &&
                 start < r.CheckOutDate &&
                 end > r.CheckInDate);
 
         private static bool IsEmailUnique(string email) =>
-            !_guests.Any(g => g.Email == email);
+            !All.Any(g => g.Email == email);
 
         public override string ToString() =>
             $"{Surname}, {Name} ({BirthYear})";

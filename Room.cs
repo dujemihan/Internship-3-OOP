@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Internship_3_OOP
+﻿namespace Internship_3_OOP
 {
     internal class Room : IAuditable
     {
-        internal static readonly List<Room> _rooms = [];
+        internal static readonly List<Room> All = [];
         public Guid Guid { get; init; } = Guid.NewGuid();
         public DateTime CreationTime { get; init; } = DateTime.Now;
         public DateTime ModificationTime { get; set; } = DateTime.Now;
@@ -22,7 +18,7 @@ namespace Internship_3_OOP
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(capacity, "Kapacitet");
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(price, "Cijena noćenja");
 
-            if (_rooms.Any(r => r.RoomNumber == number))
+            if (All.Any(r => r.RoomNumber == number))
                 throw new ArgumentException("Broj sobe mora biti jedinstven.");
 
             RoomNumber = number;
@@ -31,12 +27,13 @@ namespace Internship_3_OOP
             Capacity = capacity;
             NightPrice = price;
 
-            _rooms.Add(this);
+            All.Add(this);
         }
 
-        public bool IsOccupied(DateTime start, DateTime end) =>
-            Reservation._reservations.Any(r =>
+        public bool IsOccupied(DateTime start, DateTime end, IEnumerable<Reservation> compList) =>
+            compList.Any(r =>
                 r.RoomGuid == Guid &&
+                r.Status != ReservationStatus.Canceled &&
                 start < r.CheckOutDate &&
                 end > r.CheckInDate);
 
@@ -46,7 +43,7 @@ namespace Internship_3_OOP
                 $"| {FloorNumber}. kat | {Category.GetDisplayName()} | " +
                 $"{(Capacity % 10 == 1 ? $"{Capacity} osoba" : $"{Capacity} osobe")} | " +
                 $"{NightPrice} €/noć | broj rezervacija: " +
-                $"{Reservation._reservations.Where(r => r.RoomGuid == Guid).Count()}";
+                $"{Reservation.All.Where(r => r.RoomGuid == Guid).Count()}";
         }
     }
 }

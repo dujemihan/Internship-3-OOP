@@ -123,10 +123,11 @@ namespace Internship_3_OOP
             {
                 try
                 {
-                    var index = Reservation.All.IndexOf(reservation);
-                    reservation.Status = ReservationStatus.Canceled;
-                    reservation.ModificationTime = DateTime.Now;
-                    Reservation.All[index] = reservation;
+                    ReplaceEntity(Reservation.All, reservation, r =>
+                    {
+                        r.UpdateStatus(ReservationStatus.Canceled);
+                        return r;
+                    });
                     Console.WriteLine("Rezervacija uspješno otkazana.");
                 } catch (Exception ex)
                 {

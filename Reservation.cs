@@ -53,6 +53,12 @@ namespace Internship_3_OOP
             ModificationTime = DateTime.Now;
         }
 
+        public void UpdateStatus(ReservationStatus newStatus)
+        {
+            Status = newStatus;
+            ModificationTime = DateTime.Now;
+        }
+
         public override string ToString()
         {
             var room = Room.All.FirstOrDefault(r => r.Guid == RoomGuid);

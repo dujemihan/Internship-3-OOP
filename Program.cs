@@ -297,10 +297,7 @@ namespace Internship_3_OOP
                     ReplaceEntity(Reservation.All, reservation,
                     reservation =>
                     {
-                        reservation.CheckInDate = checkIn;
-                        reservation.CheckOutDate = checkOut;
-                        reservation.TotalPrice = (checkOut - checkIn).Days * room.NightPrice;
-                        reservation.ModificationTime = DateTime.Now;
+                        reservation.UpdateDates(checkIn, checkOut);
                         return reservation;
                     });
                     Console.WriteLine("Rezervacija uspješno promijenjena.");

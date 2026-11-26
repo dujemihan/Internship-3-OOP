@@ -39,6 +39,20 @@ namespace Internship_3_OOP
             All.Add(this);
         }
 
+        public void UpdateDates(DateTime checkIn, DateTime checkOut)
+        {
+            if (checkOut < checkIn)
+                throw new Exception("Prijava je nakon odjave.");
+
+            var room = Room.All.FirstOrDefault(r => r.Guid == RoomGuid);
+            ArgumentNullException.ThrowIfNull(room);
+
+            CheckInDate = checkIn;
+            CheckOutDate = checkOut;
+            TotalPrice = (checkOut - checkIn).Days * room.NightPrice;
+            ModificationTime = DateTime.Now;
+        }
+
         public override string ToString()
         {
             var room = Room.All.FirstOrDefault(r => r.Guid == RoomGuid);

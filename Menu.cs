@@ -87,13 +87,17 @@
             if (list.Count == 0)
                 throw new Exception("Nema ničeg za izabrati!");
 
+            T? element;
             if (list.Count == 1)
-                return list.ElementAt(0);
+            {
+                element = list.ElementAt(0);
+                Console.WriteLine(element);
+                return element;
+            }
 
             for (int i = 0; i < list.Count; i++)
                 Console.WriteLine($"{i + 1}. {list[i]}");
 
-            T? element;
             do
             {
                 element = list.ElementAtOrDefault(ReadRequired<int>(prompt, invalidMsg) - 1);
